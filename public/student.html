@@ -13,14 +13,14 @@
         .header {
             display: flex;
             align-items: center;
-            justify-content: space-between; /* Căn trái - phải */
+            justify-content: space-between;
             padding: 10px 20px;
             border-bottom: 1px solid #ccc;
             background: white;
         }
         .header-right {
             display: flex;
-            gap: 10px; /* khoảng cách giữa các nút */
+            gap: 10px;
         }
         .header span {
             font-size: 16px;
@@ -91,16 +91,15 @@
 </head>
 <body>
     <!-- Thanh header -->
-   <div class="header">
-    <span>Xin chào, <span id="studentId"></span></span>
-    <div class="header-right">
-        <button type="button" onclick="window.location.href='history.html'">
-            📜 Lịch sử
-        </button>
-        <button id="logoutBtn">Đăng xuất</button>
+    <div class="header">
+        <span>Xin chào, <span id="studentId"></span></span>
+        <div class="header-right">
+            <button type="button" onclick="window.location.href='history.html'">
+                📜 Lịch sử
+            </button>
+            <button id="logoutBtn">Đăng xuất</button>
+        </div>
     </div>
-</div>
-
 
     <!-- Nội dung chính -->
     <div class="container">
@@ -199,17 +198,19 @@
         <button class="btn-submit" onclick="duDoan()">Dự đoán</button>
         <div id="result"></div>
     </div>
+
 <script>
-    // Kiểm tra đăng nhập
-    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-    if (!currentUser) {
+    // Lấy student_id từ localStorage
+    const studentId = localStorage.getItem('student_id');
+    if (!studentId) {
         window.location.href = 'index.html';
     } else {
-        document.getElementById('studentId').textContent = currentUser.student_id;
+        document.getElementById('studentId').textContent = studentId;
     }
 
+    // Đăng xuất
     document.getElementById('logoutBtn').addEventListener('click', () => {
-        localStorage.removeItem('currentUser');
+        localStorage.removeItem('student_id');
         window.location.href = 'index.html';
     });
 
@@ -222,10 +223,8 @@
         const know = parseFloat(document.getElementById('tiepNhan').value);
         const self = parseFloat(document.getElementById('tuHoc').value);
 
-        // Tính trung bình cộng
         const score = ((dg + kn + buoi + focus + know + self) / 6).toFixed(2);
 
-        // Hiển thị kết quả
         document.getElementById('result').textContent =
             `🎯 Dự đoán điểm cuối kỳ: ${score}`;
 
@@ -234,7 +233,7 @@
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ 
-                student_id: currentUser.student_id, 
+                student_id: studentId, 
                 subject, 
                 score 
             })

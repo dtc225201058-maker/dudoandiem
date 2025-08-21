@@ -98,55 +98,47 @@
     </form>
   </div>
 
-  <script>
-    document.getElementById("loginForm").addEventListener("submit", function(e) {
-      e.preventDefault();
-      login();
-    });
+<script>
+  document.getElementById("loginForm").addEventListener("submit", function(e) {
+    e.preventDefault();
+    login();
+  });
 
-    async function login() {
-      const user = document.getElementById("username").value;
-      const pass = document.getElementById("password").value;
-      const msg = document.getElementById("message");
+  async function login() {
+    const user = document.getElementById("username").value;
+    const pass = document.getElementById("password").value;
+    const msg = document.getElementById("message");
 
-      try {
-        // ====== CHỌN 1 TRONG 2 CÁCH DƯỚI ======
+    try {
+      // 🔗 GỌI API backend trên Render
+      const res = await fetch("https://dudoandiem-1.onrender.com/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ student_id: user, password: pass })
+      });
 
-        // 1. Nếu frontend được serve chung với backend (express.static):
-        const res = await fetch("/login", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ student_id: user, password: pass })
-        });
+      const data = await res.json();
+      console.log("👉 Response từ server:", data);
 
-        // 2. Nếu frontend tách riêng (VD: deploy trên Render Static, backend khác domain):
-        // const res = await fetch("https://dudoandiem-1.onrender.com/login", {
-        //   method: "POST",
-        //   headers: { "Content-Type": "application/json" },
-        //   body: JSON.stringify({ student_id: user, password: pass })
-        // });
+      if (res.ok) {
+        msg.textContent = data.message || "Đăng nhập thành công";
+        msg.style.color = "green";
 
-        const data = await res.json();
-        console.log("👉 Response từ server:", data);
+        // Lưu student_id để dùng ở student.html
+        localStorage.setItem("student_id", user);
 
-        if (res.ok) {
-          msg.textContent = data.message || "Đăng nhập thành công";
-          msg.style.color = "green";
-
-          // lưu thông tin đăng nhập
-          localStorage.setItem("student_id", user);
-
-          setTimeout(() => window.location.href = "student.html", 1000);
-        } else {
-          msg.textContent = data.message || "Sai tài khoản hoặc mật khẩu";
-          msg.style.color = "red";
-        }
-      } catch (err) {
-        console.error("👉 Lỗi kết nối:", err);
-        msg.textContent = "Lỗi kết nối server";
+        setTimeout(() => window.location.href = "student.html", 1000);
+      } else {
+        msg.textContent = data.message || "Sai tài khoản hoặc mật khẩu";
         msg.style.color = "red";
       }
+    } catch (err) {
+      console.error("👉 Lỗi kết nối:", err);
+      msg.textContent = "Lỗi kết nối server";
+      msg.style.color = "red";
     }
-  </script>
+  }
+</script>
+
 </body>
 </html>
