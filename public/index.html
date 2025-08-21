@@ -120,23 +120,21 @@
       const data = await res.json();
       console.log("👉 Response từ server:", data);
 
-      if (res.ok) {
-        msg.textContent = data.message || "Đăng nhập thành công";
-        msg.style.color = "green";
+     if (res.ok) {
+  msg.textContent = data.message || "Đăng nhập thành công";
+  msg.style.color = "green";
 
-        // Lưu student_id để dùng ở student.html
-        localStorage.setItem("student_id", user);
+  // 🔹 Lưu thông tin user vào localStorage với key "currentUser"
+  localStorage.setItem("currentUser", JSON.stringify({
+    student_id: user
+  }));
 
-        setTimeout(() => window.location.href = "student.html", 1000);
-      } else {
-        msg.textContent = data.message || "Sai tài khoản hoặc mật khẩu";
-        msg.style.color = "red";
-      }
-    } catch (err) {
-      console.error("👉 Lỗi kết nối:", err);
-      msg.textContent = "Lỗi kết nối server";
-      msg.style.color = "red";
-    }
+  setTimeout(() => window.location.href = "student.html", 1000);
+} else {
+  msg.textContent = data.message || "Sai tài khoản hoặc mật khẩu";
+  msg.style.color = "red";
+}
+
   }
 </script>
 
