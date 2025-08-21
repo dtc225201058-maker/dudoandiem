@@ -75,15 +75,6 @@
     a:hover {
       text-decoration: underline;
     }
-
-    @media (max-width: 480px) {
-      body {
-        padding: 15px;
-      }
-      .container {
-        padding: 20px;
-      }
-    }
   </style>
 </head>
 <body>
@@ -110,31 +101,36 @@
     const msg = document.getElementById("message");
 
     try {
-      // 🔗 GỌI API backend trên Render
       const res = await fetch("https://dudoandiem-1.onrender.com/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ student_id: user, password: pass })
       });
 
+      console.log("👉 Status:", res.status);
+
       const data = await res.json();
       console.log("👉 Response từ server:", data);
 
-     if (res.ok) {
-  msg.textContent = data.message || "Đăng nhập thành công";
-  msg.style.color = "green";
+      if (res.ok) {
+        msg.textContent = data.message || "Đăng nhập thành công";
+        msg.style.color = "green";
 
-  // 🔹 Lưu thông tin user vào localStorage với key "currentUser"
-  localStorage.setItem("currentUser", JSON.stringify({
-    student_id: user
-  }));
+        // 🔹 Lưu user để student.html đọc
+        localStorage.setItem("currentUser", JSON.stringify({
+          student_id: user
+        }));
 
-  setTimeout(() => window.location.href = "student.html", 1000);
-} else {
-  msg.textContent = data.message || "Sai tài khoản hoặc mật khẩu";
-  msg.style.color = "red";
-}
-
+        setTimeout(() => window.location.href = "student.html", 1000);
+      } else {
+        msg.textContent = data.message || "Sai tài khoản hoặc mật khẩu";
+        msg.style.color = "red";
+      }
+    } catch (err) {
+      console.error("👉 Lỗi kết nối:", err);
+      msg.textContent = "Lỗi kết nối server";
+      msg.style.color = "red";
+    }
   }
 </script>
 
