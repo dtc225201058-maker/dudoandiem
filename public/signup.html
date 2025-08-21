@@ -68,10 +68,10 @@
             <button type="submit">Đăng ký</button>
             <p id="message"></p>
         </form>
-         <!-- Đường dẫn quay lại trang đăng nhập -->
-    <p class="back-link">
-        <a href="index.html">← quay lại trang đăng nhập</a>
-    </p>
+        <!-- Đường dẫn quay lại trang đăng nhập -->
+        <p class="back-link">
+            <a href="index.html">← Quay lại trang đăng nhập</a>
+        </p>
     </div>
 
 <script>
@@ -94,11 +94,14 @@
 
       const data = await res.json();
       if (res.ok) {
-        msg.textContent = data.message;
+        msg.textContent = data.message || "Đăng ký thành công";
         msg.style.color = "green";
-        setTimeout(() => window.location.href = "index.html", 1500); // ✅ sửa lại
+
+        // ✅ Lưu student_id và chuyển sang student.html luôn
+        localStorage.setItem("student_id", user);
+        setTimeout(() => window.location.href = "student.html", 1000);
       } else {
-        msg.textContent = data.message;
+        msg.textContent = data.message || "Đăng ký thất bại";
         msg.style.color = "red";
       }
     } catch (err) {
@@ -107,7 +110,6 @@
     }
   }
 </script>
-
 
 </body>
 </html>

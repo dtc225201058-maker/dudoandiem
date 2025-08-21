@@ -200,9 +200,21 @@
     </div>
 
 <script>
-    // Lấy student_id từ localStorage
-    const studentId = localStorage.getItem('student_id');
+    // Lấy student_id từ localStorage hoặc URL
+    let studentId = localStorage.getItem('student_id');
+
     if (!studentId) {
+        const params = new URLSearchParams(window.location.search);
+        studentId = params.get("id");
+
+        if (studentId) {
+            // Lưu lại để dùng tiếp
+            localStorage.setItem("student_id", studentId);
+        }
+    }
+
+    if (!studentId) {
+        alert("Bạn chưa đăng nhập, vui lòng đăng nhập lại!");
         window.location.href = 'index.html';
     } else {
         document.getElementById('studentId').textContent = studentId;
@@ -248,6 +260,7 @@
         return Math.max(lo, Math.min(hi, x));
     }
 </script>
+
 
 </body>
 </html>
