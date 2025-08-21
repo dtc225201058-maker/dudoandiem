@@ -63,17 +63,32 @@
     </tbody>
   </table>
 
-  <a href="student.html" class="back-btn">⬅ Quay lại trang dự đoán</a>
+  <!-- Nút quay lại -->
+  <a id="backBtn" href="#" class="back-btn">⬅ Quay lại trang dự đoán</a>
 
 <script>
   document.addEventListener("DOMContentLoaded", async () => {
-    const currentUser = JSON.parse(localStorage.getItem("currentUser"));
-    const studentId = currentUser?.student_id;
+    let studentId = null;
+
+    // Ưu tiên lấy từ URL trước
+    const params = new URLSearchParams(window.location.search);
+    if (params.has("id")) {
+      studentId = params.get("id");
+      // đồng bộ vào localStorage để lần sau có thể dùng
+      localStorage.setItem("currentUser", JSON.stringify({ student_id: studentId }));
+    } else {
+      const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+      studentId = currentUser?.student_id;
+    }
 
     if (!studentId) {
-      window.location.href = "login.html";
+      alert("Bạn chưa đăng nhập, vui lòng đăng nhập lại!");
+      window.location.href = "index.html";
       return;
     }
+
+    // Cập nhật nút quay lại cho đúng studentId
+    document.getElementById("backBtn").href = "student.html?id=" + encodeURIComponent(studentId);
 
     const API_BASE_URL = "https://dudoandiem-1.onrender.com";
 

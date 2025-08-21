@@ -94,9 +94,10 @@
     <div class="header">
         <span>Xin chào, <span id="studentId"></span></span>
         <div class="header-right">
-            <button type="button" onclick="window.location.href='history.html'">
-                📜 Lịch sử
-            </button>
+<button type="button" onclick="window.location.href='history.html?id=' + encodeURIComponent(localStorage.getItem('student_id'))">
+    📜 Lịch sử
+</button>
+
             <button id="logoutBtn">Đăng xuất</button>
         </div>
     </div>
