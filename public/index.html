@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Đăng nhập</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f4f6f8;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      background: linear-gradient(120deg, #a6c0fe, #f68084);
+    }
+
+    .form-container {
+      background-color: white;
+      padding: 30px 40px;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      width: 350px;
+      text-align: center;
+    }
+
+    h2 {
+      margin-bottom: 20px;
+      font-weight: 600;
+      color: #333;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 15px;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 500;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
+    #message {
+      margin-top: 10px;
+      font-size: 14px;
+      min-height: 18px;
+    }
+
+    a {
+      display: inline-block;
+      margin-top: 15px;
+      font-size: 14px;
+      color: #007BFF;
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    @media (max-width: 480px) {
+      body {
+        padding: 15px;
+      }
+      .container {
+        padding: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="form-container">
+    <h2>Đăng nhập</h2>
+    <form id="loginForm">
+      <input type="text" id="username" placeholder="Mã Sinh Viên" required>
+      <input type="password" id="password" placeholder="Mật khẩu" required>
+      <button type="submit">Đăng nhập</button>
+      <div id="message"></div>
+      <a href="signup.html">Chưa có tài khoản? Đăng ký</a>
+    </form>
+  </div>
+
+  <script>
+    document.getElementById("loginForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+      login();
+    });
+
+    async function login() {
+      const user = document.getElementById("username").value;
+      const pass = document.getElementById("password").value;
+      const msg = document.getElementById("message");
+
+      try {
+        // ====== CHỌN 1 TRONG 2 CÁCH DƯỚI ======
+
+        // 1. Nếu frontend được serve chung với backend (express.static):
+        const res = await fetch("/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ student_id: user, password: pass })
+        });
+
+        // 2. Nếu frontend tách riêng (VD: deploy trên Render Static, backend khác domain):
+        // const res = await fetch("https://dudoandiem-1.onrender.com/login", {
+        //   method: "POST",
+        //   headers: { "Content-Type": "application/json" },
+        //   body: JSON.stringify({ student_id: user, password: pass })
+        // });
+
+        const data = await res.json();
+        console.log("👉 Response từ server:", data);
+
+        if (res.ok) {
+          msg.textContent = data.message || "Đăng nhập thành công";
+          msg.style.color = "green";
+
+          // lưu thông tin đăng nhập
+          localStorage.setItem("student_id", user);
+
+          setTimeout(() => window.location.href = "student.html", 1000);
+        } else {
+          msg.textContent = data.message || "Sai tài khoản hoặc mật khẩu";
+          msg.style.color = "red";
+        }
+      } catch (err) {
+        console.error("👉 Lỗi kết nối:", err);
+        msg.textContent = "Lỗi kết nối server";
+        msg.style.color = "red";
+      }
+    }
+  </script>
+</body>
+</html>

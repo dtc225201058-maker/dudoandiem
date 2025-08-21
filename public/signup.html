@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng ký</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(120deg, #a6c0fe, #f68084);
+            margin: 0;
+        }
+        .signup-container {
+            background-color: white;
+            padding: 30px 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            width: 350px;
+            text-align: center;
+        }
+        h2 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 15px;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #45a049;
+        }
+        #message {
+            margin-top: 10px;
+            font-size: 14px;
+            min-height: 18px;
+        }
+        @media (max-width: 480px) {
+            body { padding: 15px; }
+            .signup-container { padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="signup-container">
+        <h2>Đăng ký</h2>
+        <form id="signupForm">
+            <input type="text" id="username" placeholder="Mã Sinh Viên" required>
+            <input type="password" id="password" placeholder="Mật khẩu" required>
+            <button type="submit">Đăng ký</button>
+            <p id="message"></p>
+        </form>
+         <!-- Đường dẫn quay lại trang đăng nhập -->
+    <p class="back-link">
+        <a href="index.html">← quay lại trang đăng nhập</a>
+    </p>
+    </div>
+
+<script>
+  document.getElementById("signupForm").addEventListener("submit", function(e) {
+    e.preventDefault();
+    signup();
+  });
+
+  async function signup() {
+    const user = document.getElementById("username").value;
+    const pass = document.getElementById("password").value;
+    const msg = document.getElementById("message");
+
+    try {
+      const res = await fetch("https://dudoandiem-1.onrender.com/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ student_id: user, password: pass })
+      });
+
+      const data = await res.json();
+      if (res.ok) {
+        msg.textContent = data.message;
+        msg.style.color = "green";
+        setTimeout(() => window.location.href = "index.html", 1500); // ✅ sửa lại
+      } else {
+        msg.textContent = data.message;
+        msg.style.color = "red";
+      }
+    } catch (err) {
+      msg.textContent = "Lỗi kết nối server";
+      msg.style.color = "red";
+    }
+  }
+</script>
+
+
+</body>
+</html>

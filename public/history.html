@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lịch sử dự đoán điểm</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6f8;
+      margin: 0;
+      padding: 20px;
+    }
+    h2 {
+      text-align: center;
+      color: #333;
+    }
+    #historyTable {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      background: white;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    #historyTable th, #historyTable td {
+      border: 1px solid #ccc;
+      padding: 10px;
+      text-align: center;
+      font-size: 14px;
+    }
+    #historyTable th {
+      background: #4CAF50;
+      color: white;
+    }
+    .back-btn {
+      display: inline-block;
+      margin-top: 20px;
+      padding: 10px 15px;
+      background: #007BFF;
+      color: white;
+      text-decoration: none;
+      border-radius: 6px;
+    }
+    .back-btn:hover {
+      background: #0056b3;
+    }
+  </style>
+</head>
+<body>
+  <h2>Lịch sử dự đoán điểm</h2>
+
+  <table id="historyTable">
+    <thead>
+      <tr>
+        <th>MSSV</th>
+        <th>Môn học</th>
+        <th>Điểm dự đoán</th>
+        <th>Thời gian</th>
+      </tr>
+    </thead>
+    <tbody id="historyBody">
+      <!-- Dữ liệu sẽ được thêm bằng JS -->
+    </tbody>
+  </table>
+
+  <a href="student.html" class="back-btn">⬅ Quay lại trang dự đoán</a>
+
+<script>
+  document.addEventListener("DOMContentLoaded", async () => {
+    const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+    const studentId = currentUser?.student_id;
+
+    if (!studentId) {
+      window.location.href = "login.html";
+      return;
+    }
+
+    const API_BASE_URL = "https://dudoandiem-1.onrender.com";
+
+    try {
+      const res = await fetch(`${API_BASE_URL}/history/${studentId}`);
+
+      if (!res.ok) throw new Error("Lỗi khi lấy dữ liệu từ server");
+
+      const history = await res.json();
+      const tbody = document.getElementById("historyBody");
+
+      if (history.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="4">Chưa có lịch sử dự đoán nào</td></tr>`;
+        return;
+      }
+
+      history.forEach(item => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${item.student_id}</td>
+          <td>${item.subject}</td>
+          <td>${item.score}</td>
+          <td>${new Date(item.time).toLocaleString()}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+    } catch (err) {
+      console.error(err);
+      document.getElementById("historyBody").innerHTML =
+        `<tr><td colspan="4">Lỗi khi tải lịch sử</td></tr>`;
+    }
+  });
+</script>
+
+</body>
+</html>
