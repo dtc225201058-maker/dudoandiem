@@ -218,6 +218,7 @@
         window.location.href = 'index.html';
     } else {
         document.getElementById('studentId').textContent = studentId;
+        loadHistory(); // 🔥 Gọi hàm load lịch sử khi vào trang
     }
 
     // Đăng xuất
@@ -251,8 +252,34 @@
             })
         })
         .then(res => res.json())
-        .then(data => console.log('✅ Lưu dự đoán thành công:', data))
+        .then(data => {
+            console.log('✅ Lưu dự đoán thành công:', data);
+            loadHistory(); // 🔥 Sau khi lưu thì load lại lịch sử
+        })
         .catch(err => console.error('❌ Lỗi khi lưu dự đoán:', err));
+    }
+
+    // 🔥 Hàm load lịch sử từ server
+    function loadHistory() {
+        fetch(`https://dudoandiem-1.onrender.com/history/${studentId}`)
+            .then(res => res.json())
+            .then(data => {
+                console.log("📜 Lịch sử dự đoán:", data);
+                const list = document.getElementById("history");
+                list.innerHTML = "";
+
+                if (data.length === 0) {
+                    list.innerHTML = "<li>Chưa có dự đoán nào</li>";
+                    return;
+                }
+
+                data.forEach(item => {
+                    const li = document.createElement("li");
+                    li.textContent = `${item.subject}: ${item.score}`;
+                    list.appendChild(li);
+                });
+            })
+            .catch(err => console.error("❌ Lỗi tải lịch sử:", err));
     }
 
     function clamp(x, lo = 0, hi = 10) {
@@ -260,6 +287,7 @@
         return Math.max(lo, Math.min(hi, x));
     }
 </script>
+
 
 
 </body>
