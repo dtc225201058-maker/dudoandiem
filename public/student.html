@@ -200,92 +200,107 @@
     </div>
 
 <script>
-    // Lấy student_id từ localStorage hoặc URL
-    let studentId = localStorage.getItem('student_id');
+  // ====== LẤY student_id từ localStorage hoặc URL ======
+  let studentId = localStorage.getItem('student_id');
 
-    if (!studentId) {
-        const params = new URLSearchParams(window.location.search);
-        studentId = params.get("id");
+  // Nếu localStorage không có thì thử lấy từ URL (?id=...)
+  if (!studentId) {
+    const params = new URLSearchParams(window.location.search);
+    studentId = params.get("id");
 
-        if (studentId) {
-            // Lưu lại để dùng tiếp
-            localStorage.setItem("student_id", studentId);
+    if (studentId) {
+      // ✅ Lưu lại vào localStorage để dùng cho lần sau
+      localStorage.setItem("student_id", studentId);
+    }
+  }
+
+  // Nếu vẫn không có studentId => buộc quay về trang đăng nhập
+  if (!studentId) {
+    alert("Bạn chưa đăng nhập, vui lòng đăng nhập lại!");
+    window.location.href = 'index.html';
+  } else {
+    // ✅ Hiển thị tên sinh viên
+    document.getElementById('studentId').textContent = studentId;
+
+    // ✅ Gọi hàm load lịch sử ngay sau khi có studentId
+    loadHistory();
+  }
+
+  // ====== NÚT ĐĂNG XUẤT ======
+  document.getElementById('logoutBtn').addEventListener('click', () => {
+    localStorage.removeItem('student_id');
+    window.location.href = 'index.html';
+  });
+
+  // ====== HÀM DỰ ĐOÁN VÀ GỬI LÊN SERVER ======
+  function duDoan() {
+    const subject = document.getElementById('monHoc').value;
+    const dg = clamp(parseFloat(document.getElementById('diemDauGio').value));
+    const kn = clamp(parseFloat(document.getElementById('diemKyNang').value));
+    const buoi = parseFloat(document.getElementById('soBuoiHoc').value);
+    const focus = parseFloat(document.getElementById('tapTrung').value);
+    const know = parseFloat(document.getElementById('tiepNhan').value);
+    const self = parseFloat(document.getElementById('tuHoc').value);
+
+    const score = ((dg + kn + buoi + focus + know + self) / 6).toFixed(2);
+
+    document.getElementById('result').textContent =
+      `🎯 Dự đoán điểm cuối kỳ: ${score}`;
+
+    // ✅ Gửi dữ liệu dự đoán lên server
+    fetch('https://dudoandiem-1.onrender.com/predict', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        student_id: studentId,
+        subject,
+        score
+      })
+    })
+    .then(res => res.json())
+    .then(data => {
+      console.log('✅ Lưu dự đoán thành công:', data);
+      // 🔥 Sau khi lưu thành công, load lại lịch sử
+      loadHistory();
+    })
+    .catch(err => console.error('❌ Lỗi khi lưu dự đoán:', err));
+  }
+
+  // ====== HÀM LẤY LỊCH SỬ DỰ ĐOÁN ======
+  function loadHistory() {
+    fetch(`https://dudoandiem-1.onrender.com/history/${studentId}`)
+      .then(res => res.json())
+      .then(data => {
+        const table = document.getElementById('historyTable');
+        table.innerHTML = ""; // Xoá cũ
+
+        if (!data || data.length === 0) {
+          table.innerHTML = "<tr><td colspan='3'>Chưa có lịch sử dự đoán</td></tr>";
+          return;
         }
-    }
 
-    if (!studentId) {
-        alert("Bạn chưa đăng nhập, vui lòng đăng nhập lại!");
-        window.location.href = 'index.html';
-    } else {
-        document.getElementById('studentId').textContent = studentId;
-        loadHistory(); // 🔥 Gọi hàm load lịch sử khi vào trang
-    }
+        data.forEach(row => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td>${row.subject}</td>
+            <td>${row.score}</td>
+            <td>${new Date(row.created_at).toLocaleString('vi-VN')}</td>
+          `;
+          table.appendChild(tr);
+        });
+      })
+      .catch(err => {
+        console.error('❌ Lỗi khi tải lịch sử:', err);
+        document.getElementById('historyTable').innerHTML =
+          "<tr><td colspan='3'>Lỗi khi tải lịch sử</td></tr>";
+      });
+  }
 
-    // Đăng xuất
-    document.getElementById('logoutBtn').addEventListener('click', () => {
-        localStorage.removeItem('student_id');
-        window.location.href = 'index.html';
-    });
-
-    function duDoan() {
-        const subject = document.getElementById('monHoc').value;
-        const dg = clamp(parseFloat(document.getElementById('diemDauGio').value));
-        const kn = clamp(parseFloat(document.getElementById('diemKyNang').value));
-        const buoi = parseFloat(document.getElementById('soBuoiHoc').value);
-        const focus = parseFloat(document.getElementById('tapTrung').value);
-        const know = parseFloat(document.getElementById('tiepNhan').value);
-        const self = parseFloat(document.getElementById('tuHoc').value);
-
-        const score = ((dg + kn + buoi + focus + know + self) / 6).toFixed(2);
-
-        document.getElementById('result').textContent =
-            `🎯 Dự đoán điểm cuối kỳ: ${score}`;
-
-        // Gửi dữ liệu dự đoán lên server
-        fetch('https://dudoandiem-1.onrender.com/predict', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ 
-                student_id: studentId, 
-                subject, 
-                score 
-            })
-        })
-        .then(res => res.json())
-        .then(data => {
-            console.log('✅ Lưu dự đoán thành công:', data);
-            loadHistory(); // 🔥 Sau khi lưu thì load lại lịch sử
-        })
-        .catch(err => console.error('❌ Lỗi khi lưu dự đoán:', err));
-    }
-
-    // 🔥 Hàm load lịch sử từ server
-    function loadHistory() {
-        fetch(`https://dudoandiem-1.onrender.com/history/${studentId}`)
-            .then(res => res.json())
-            .then(data => {
-                console.log("📜 Lịch sử dự đoán:", data);
-                const list = document.getElementById("history");
-                list.innerHTML = "";
-
-                if (data.length === 0) {
-                    list.innerHTML = "<li>Chưa có dự đoán nào</li>";
-                    return;
-                }
-
-                data.forEach(item => {
-                    const li = document.createElement("li");
-                    li.textContent = `${item.subject}: ${item.score}`;
-                    list.appendChild(li);
-                });
-            })
-            .catch(err => console.error("❌ Lỗi tải lịch sử:", err));
-    }
-
-    function clamp(x, lo = 0, hi = 10) {
-        if (isNaN(x)) return 0;
-        return Math.max(lo, Math.min(hi, x));
-    }
+  // ====== HÀM CHẶN GIÁ TRỊ NHẬP NGOÀI 0–10 ======
+  function clamp(x, lo = 0, hi = 10) {
+    if (isNaN(x)) return 0;
+    return Math.max(lo, Math.min(hi, x));
+  }
 </script>
 
 

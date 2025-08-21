@@ -117,11 +117,14 @@
         msg.style.color = "green";
 
         // 🔹 Lưu user để student.html đọc
-        localStorage.setItem("currentUser", JSON.stringify({
-          student_id: user
-        }));
+       // 🔹 Lưu trực tiếp student_id để student.html đọc
+localStorage.setItem("student_id", user);
 
-        setTimeout(() => window.location.href = "student.html", 1000);
+
+      setTimeout(() => {
+  window.location.href = "student.html?id=" + encodeURIComponent(user);
+}, 1000);
+
       } else {
         msg.textContent = data.message || "Sai tài khoản hoặc mật khẩu";
         msg.style.color = "red";
