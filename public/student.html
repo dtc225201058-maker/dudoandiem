@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Trang Sinh Viên</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #f5f5f5;
+        }
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 20px;
+            border-bottom: 1px solid #ccc;
+            background: white;
+        }
+        .header-right {
+            display: flex;
+            gap: 10px;
+        }
+        .header span {
+            font-size: 16px;
+            margin-right: 15px;
+        }
+        button {
+            background: #d9534f;
+            color: white;
+            padding: 6px 12px;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #c9302c;
+        }
+        .container {
+            max-width: 750px;
+            margin: 40px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        h2 {
+            text-align: center;
+        }
+        .form-row {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 15px;
+        }
+        .form-group {
+            flex: 1;
+        }
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        input, select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .btn-submit {
+            background: #28a745;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+        }
+        .btn-submit:hover {
+            background: #218838;
+        }
+        #result {
+            margin-top: 15px;
+            font-weight: bold;
+            text-align: center;
+            color: #007bff;
+            white-space: pre-line;
+        }
+    </style>
+</head>
+<body>
+    <!-- Thanh header -->
+    <div class="header">
+    <span>Xin chào, <span id="studentId"></span></span>
+    <div class="header-right">
+        <button type="button" onclick="window.location.href='add_subject.html'">
+            ➕ Thêm môn học
+        </button>
+        <button type="button" onclick="window.location.href='history.html?id=' + encodeURIComponent(localStorage.getItem('student_id'))">
+            📜 Lịch sử
+        </button>
+        <button id="logoutBtn">Đăng xuất</button>
+    </div>
+</div>
+
+
+    <!-- Nội dung chính -->
+    <div class="container">
+        <h2>🎯 Dự đoán điểm cuối kỳ</h2>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label>Môn học</label>
+                <select id="monHoc">
+                    <!-- 62 môn (theo chương trình bạn đưa) -->
+                    <option value="Khám phá thế giới IT">Khám phá thế giới IT</option>
+                    <option value="Giáo dục thể chất 1">Giáo dục thể chất 1</option>
+                    <option value="Giáo dục thể chất 2">Giáo dục thể chất 2</option>
+                    <option value="Dự án công nghệ tri thức và học máy">Dự án công nghệ tri thức và học máy</option>
+                    <option value="Dự án hạ tầng mạng">Dự án hạ tầng mạng</option>
+                    <option value="Dự án phát triển phần mềm">Dự án phát triển phần mềm</option>
+                    <option value="Kỹ năng nghề nghiệp">Kỹ năng nghề nghiệp</option>
+                    <option value="Phương pháp nghiên cứu và ứng dụng công nghệ hiện đại">Phương pháp nghiên cứu và ứng dụng công nghệ hiện đại</option>
+                    <option value="Thực tập">Thực tập</option>
+                    <option value="Kỹ thuật điện tử (ELE131)">Kỹ thuật điện tử (ELE131)</option>
+                    <option value="Kỹ thuật điện tử (ELE132)">Kỹ thuật điện tử (ELE132)</option>
+                    <option value="Lập trình C trong kỹ thuật">Lập trình C trong kỹ thuật</option>
+                    <option value="Lý thuyết mạch điện">Lý thuyết mạch điện</option>
+                    <option value="Vẽ kỹ thuật và Autocad">Vẽ kỹ thuật và Autocad</option>
+                    <option value="Chuyển đổi số">Chuyển đổi số</option>
+                    <option value="Điện toán đám mây">Điện toán đám mây</option>
+                    <option value="Học máy">Học máy</option>
+                    <option value="Phương pháp phát triển phần mềm hướng đối tượng">Phương pháp phát triển phần mềm hướng đối tượng</option>
+                    <option value="Quản lý dự án CNTT">Quản lý dự án CNTT</option>
+                    <option value="Quản trị hệ thống">Quản trị hệ thống</option>
+                    <option value="Xử lý ảnh">Xử lý ảnh</option>
+                    <option value="An toàn thông tin">An toàn thông tin</option>
+                    <option value="Công nghệ .Net">Công nghệ .Net</option>
+                    <option value="Hệ quản trị cơ sở dữ liệu">Hệ quản trị cơ sở dữ liệu</option>
+                    <option value="Mạng máy tính nâng cao">Mạng máy tính nâng cao</option>
+                    <option value="Trí tuệ nhân tạo">Trí tuệ nhân tạo</option>
+                    <option value="Cấu trúc dữ liệu và giải thuật">Cấu trúc dữ liệu và giải thuật</option>
+                    <option value="Cấu trúc máy tính và Hệ điều hành">Cấu trúc máy tính và Hệ điều hành</option>
+                    <option value="Cơ sở dữ liệu">Cơ sở dữ liệu</option>
+                    <option value="Kỹ thuật lập trình">Kỹ thuật lập trình</option>
+                    <option value="Lập trình hướng đối tượng">Lập trình hướng đối tượng</option>
+                    <option value="Mạng máy tính">Mạng máy tính</option>
+                    <option value="Nhập môn công nghệ phần mềm">Nhập môn công nghệ phần mềm</option>
+                    <option value="Phân tích thiết kế hệ thống">Phân tích thiết kế hệ thống</option>
+                    <option value="Toán rời rạc">Toán rời rạc</option>
+                    <option value="Xác suất thống kê">Xác suất thống kê</option>
+                    <option value="Anh văn 1">Anh văn 1</option>
+                    <option value="Anh văn 2">Anh văn 2</option>
+                    <option value="Anh văn 3">Anh văn 3</option>
+                    <option value="Anh văn 4">Anh văn 4</option>
+                    <option value="Chủ nghĩa xã hội khoa học">Chủ nghĩa xã hội khoa học</option>
+                    <option value="Kinh tế chính trị Mác - Lênin">Kinh tế chính trị Mác - Lênin</option>
+                    <option value="Lịch sử Đảng Cộng sản Việt Nam">Lịch sử Đảng Cộng sản Việt Nam</option>
+                    <option value="Tin học đại cương">Tin học đại cương</option>
+                    <option value="Toán cao cấp">Toán cao cấp</option>
+                    <option value="Triết học Mác - Lênin">Triết học Mác - Lênin</option>
+                    <option value="Tư tưởng Hồ Chí Minh">Tư tưởng Hồ Chí Minh</option>
+                    <option value="Vật lý">Vật lý</option>
+                    <option value="Ngoại ngữ 2">Ngoại ngữ 2</option>
+                    <option value="Ngoại ngữ 3">Ngoại ngữ 3</option>
+                    <option value="Đồ án tốt nghiệp">Đồ án tốt nghiệp</option>
+                    <option value="Phát triển ứng dụng chuyên sâu">Phát triển ứng dụng chuyên sâu</option>
+                    <option value="Thực tập tốt nghiệp">Thực tập tốt nghiệp</option>
+                    <option value="Tương tác người máy">Tương tác người máy</option>
+                    <option value="Lập trình ứng dụng Java">Lập trình ứng dụng Java</option>
+                    <option value="Phát triển ứng dụng .NET">Phát triển ứng dụng .NET</option>
+                    <option value="Phát triển ứng dụng PHP">Phát triển ứng dụng PHP</option>
+                    <option value="Phát triển ứng dụng Python">Phát triển ứng dụng Python</option>
+                    <option value="Dự án khởi nghiệp">Dự án khởi nghiệp</option>
+                    <option value="Marketing số">Marketing số</option>
+                    <option value="Lập trình cho thiết bị di động">Lập trình cho thiết bị di động</option>
+                    <option value="Phát triển ứng dụng đa nền tảng">Phát triển ứng dụng đa nền tảng</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Điểm đầu giờ (0-10)</label>
+                <input type="number" id="diemDauGio" min="0" max="10">
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label>Điểm kỹ năng (0-10)</label>
+                <input type="number" id="diemKyNang" min="0" max="10">
+            </div>
+            <div class="form-group">
+                <label>Số buổi đi học</label>
+                <select id="soBuoiHoc">
+                    <option value="10">Đủ</option>
+                    <option value="8">Vắng 1</option>
+                    <option value="6">Vắng 2</option>
+                    <option value="4">Vắng 3</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label>Mức độ tập trung</label>
+                <select id="tapTrung">
+                    <option value="2">0-20%</option>
+                    <option value="4">21-40%</option>
+                    <option value="6">41-60%</option>
+                    <option value="8">61-80%</option>
+                    <option value="10">81-100%</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Mức độ tiếp nhận kiến thức</label>
+                <select id="tiepNhan">
+                    <option value="2">0-20%</option>
+                    <option value="4">21-40%</option>
+                    <option value="6">41-60%</option>
+                    <option value="8">61-80%</option>
+                    <option value="10">81-100%</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label>Mức độ tự học</label>
+                <select id="tuHoc">
+                    <option value="4">&lt;1h</option>
+                    <option value="7">&lt;3h</option>
+                    <option value="10">&gt;3h</option>
+                </select>
+            </div>
+        </div>
+
+        <button class="btn-submit" onclick="duDoan()">Dự đoán</button>
+        <div id="result"></div>
+    </div>
+
+<script>
+  // ====== Mapping môn học -> khối kiến thức (cho 62 môn trên) ======
+  const blockMap = {
+    "Khám phá thế giới IT": "Cơ sở nhóm ngành",
+    "Giáo dục thể chất 1": "Đại cương",
+    "Giáo dục thể chất 2": "Đại cương",
+    "Dự án công nghệ tri thức và học máy": "Đồ án / Thực tập",
+    "Dự án hạ tầng mạng": "Đồ án / Thực tập",
+    "Dự án phát triển phần mềm": "Đồ án / Thực tập",
+    "Kỹ năng nghề nghiệp": "Tự chọn",
+    "Phương pháp nghiên cứu và ứng dụng công nghệ hiện đại": "Tự chọn",
+    "Thực tập": "Đồ án / Thực tập",
+    "Kỹ thuật điện tử (ELE131)": "Tự chọn",
+    "Kỹ thuật điện tử (ELE132)": "Tự chọn",
+    "Lập trình C trong kỹ thuật": "Cơ sở nhóm ngành",
+    "Lý thuyết mạch điện": "Tự chọn",
+    "Vẽ kỹ thuật và Autocad": "Tự chọn",
+    "Chuyển đổi số": "Cơ sở ngành",
+    "Điện toán đám mây": "Chuyên ngành",
+    "Học máy": "Chuyên ngành",
+    "Phương pháp phát triển phần mềm hướng đối tượng": "Chuyên ngành",
+    "Quản lý dự án CNTT": "Chuyên ngành",
+    "Quản trị hệ thống": "Cơ sở ngành",
+    "Xử lý ảnh": "Chuyên ngành",
+    "An toàn thông tin": "Cơ sở ngành",
+    "Công nghệ .Net": "Chuyên ngành",
+    "Hệ quản trị cơ sở dữ liệu": "Cơ sở ngành",
+    "Mạng máy tính nâng cao": "Cơ sở ngành",
+    "Trí tuệ nhân tạo": "Cơ sở ngành",
+    "Cấu trúc dữ liệu và giải thuật": "Cơ sở nhóm ngành",
+    "Cấu trúc máy tính và Hệ điều hành": "Cơ sở nhóm ngành",
+    "Cơ sở dữ liệu": "Cơ sở nhóm ngành",
+    "Kỹ thuật lập trình": "Cơ sở nhóm ngành",
+    "Lập trình hướng đối tượng": "Cơ sở nhóm ngành",
+    "Mạng máy tính": "Cơ sở nhóm ngành",
+    "Nhập môn công nghệ phần mềm": "Cơ sở nhóm ngành",
+    "Phân tích thiết kế hệ thống": "Cơ sở nhóm ngành",
+    "Toán rời rạc": "Cơ sở nhóm ngành",
+    "Xác suất thống kê": "Cơ sở nhóm ngành",
+    "Anh văn 1": "Đại cương",
+    "Anh văn 2": "Đại cương",
+    "Anh văn 3": "Đại cương",
+    "Anh văn 4": "Đại cương",
+    "Chủ nghĩa xã hội khoa học": "Đại cương",
+    "Kinh tế chính trị Mác - Lênin": "Đại cương",
+    "Lịch sử Đảng Cộng sản Việt Nam": "Đại cương",
+    "Tin học đại cương": "Đại cương",
+    "Toán cao cấp": "Đại cương",
+    "Triết học Mác - Lênin": "Đại cương",
+    "Tư tưởng Hồ Chí Minh": "Đại cương",
+    "Vật lý": "Đại cương",
+    "Ngoại ngữ 2": "Đại cương",
+    "Ngoại ngữ 3": "Đại cương",
+    "Đồ án tốt nghiệp": "Đồ án / Thực tập",
+    "Phát triển ứng dụng chuyên sâu": "Chuyên ngành",
+    "Thực tập tốt nghiệp": "Đồ án / Thực tập",
+    "Tương tác người máy": "Chuyên ngành",
+    "Lập trình ứng dụng Java": "Tự chọn",
+    "Phát triển ứng dụng .NET": "Tự chọn",
+    "Phát triển ứng dụng PHP": "Tự chọn",
+    "Phát triển ứng dụng Python": "Tự chọn",
+    "Dự án khởi nghiệp": "Tự chọn",
+    "Marketing số": "Tự chọn",
+    "Lập trình cho thiết bị di động": "Tự chọn",
+    "Phát triển ứng dụng đa nền tảng": "Tự chọn"
+  };
+
+  // ====== Difficulty multipliers ======
+  const weightByBlock = {
+    "Đại cương": 1.03,
+    "Cơ sở nhóm ngành": 1.00,
+    "Cơ sở ngành": 0.98,
+    "Chuyên ngành": 0.95,
+    "Tự chọn": 1.00,
+    "Đồ án / Thực tập": 0.90
+  };
+
+  // ====== LẤY student_id ======
+  let studentId = localStorage.getItem('student_id');
+  if (!studentId) {
+    const params = new URLSearchParams(window.location.search);
+    studentId = params.get("id");
+    if (studentId) localStorage.setItem("student_id", studentId);
+  }
+  if (!studentId) {
+    alert("Bạn chưa đăng nhập, vui lòng đăng nhập lại!");
+    window.location.href = 'index.html';
+  } else {
+    document.getElementById('studentId').textContent = studentId;
+    loadHistory();
+  }
+
+  // ====== LOGOUT ======
+  document.getElementById('logoutBtn').addEventListener('click', () => {
+    localStorage.removeItem('student_id');
+    window.location.href = 'index.html';
+  });
+
+  // ====== DỰ ĐOÁN ======
+  function duDoan() {
+    const subject = document.getElementById('monHoc').value;
+    const dg = clamp(parseFloat(document.getElementById('diemDauGio').value));
+    const kn = clamp(parseFloat(document.getElementById('diemKyNang').value));
+    const buoi = parseFloat(document.getElementById('soBuoiHoc').value);
+    const focus = parseFloat(document.getElementById('tapTrung').value);
+    const know = parseFloat(document.getElementById('tiepNhan').value);
+    const self = parseFloat(document.getElementById('tuHoc').value);
+
+    let rawScore = (dg + kn + buoi + focus + know + self) / 6;
+    rawScore = Math.max(0, Math.min(10, rawScore));
+
+    const block = blockMap[subject] || "Cơ sở nhóm ngành";
+    const weight = weightByBlock[block] !== undefined ? weightByBlock[block] : 1.0;
+    let adjusted = rawScore * weight;
+    adjusted = Math.max(0, Math.min(10, adjusted));
+
+    document.getElementById('result').innerHTML =
+      `🎯 Điểm dự đoán của bạn : <b>${adjusted.toFixed(2)}</b>`;
+
+    fetch('https://dudoandiem-1.onrender.com/predict', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ student_id: studentId, subject, score: Number(adjusted.toFixed(2)) })
+    })
+    .then(res => res.json())
+    .then(data => {
+      console.log('✅ Lưu dự đoán thành công:', data);
+      loadHistory();
+    })
+    .catch(err => console.error('❌ Lỗi khi lưu dự đoán:', err));
+  }
+
+  // ====== LỊCH SỬ ======
+  function loadHistory() {
+    fetch(`https://dudoandiem-1.onrender.com/history/${studentId}`)
+      .then(res => res.json())
+      .then(data => {
+        const table = document.getElementById('historyTable');
+        if (!table) return;
+        table.innerHTML = "";
+        if (!data || data.length === 0) {
+          table.innerHTML = "<tr><td colspan='3'>Chưa có lịch sử dự đoán</td></tr>";
+          return;
+        }
+        data.forEach(row => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td>${row.subject}</td>
+            <td>${row.score}</td>
+            <td>${new Date(row.created_at).toLocaleString('vi-VN')}</td>
+          `;
+          table.appendChild(tr);
+        });
+      })
+      .catch(err => console.error('❌ Lỗi khi tải lịch sử:', err));
+  }
+
+  // ====== CLAMP ======
+  function clamp(x, lo = 0, hi = 10) {
+    if (isNaN(x)) return 0;
+    return Math.max(lo, Math.min(hi, x));
+  }
+
+ // ====== NẠP THÊM MÔN HỌC TỪ localStorage ======
+  function loadExtraSubjects() {
+    try {
+      const select = document.getElementById("monHoc");
+      const extraSubjects = JSON.parse(localStorage.getItem("extraSubjects") || "[]");
+
+      console.log("📌 Extra subjects từ localStorage:", extraSubjects); // debug
+
+      if (Array.isArray(extraSubjects)) {
+        extraSubjects.forEach(sub => {
+          if (typeof sub === "object" && sub.name && sub.block) {
+            // Gắn nhãn cho môn học mới
+            blockMap[sub.name] = sub.block;
+
+            // Thêm vào dropdown nếu chưa có
+            if (![...select.options].some(opt => opt.value === sub.name)) {
+              const opt = document.createElement("option");
+              opt.value = sub.name;
+              opt.textContent = sub.name;
+              select.appendChild(opt);
+            }
+          }
+        });
+      }
+    } catch (e) {
+      console.error("❌ Lỗi khi nạp môn học thêm:", e);
+    }
+  }
+
+  // 🚀 Gọi ngay khi script chạy
+  loadExtraSubjects();
+</script>
+
+</body>
+</html>

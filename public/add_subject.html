@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Thêm môn học</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f6f9;
+    }
+    .container {
+      max-width: 600px;
+      margin: 30px auto;
+      background: white;
+      padding: 20px 30px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #333;
+    }
+    form {
+      display: flex;
+      flex-direction: column;
+    }
+    label {
+      margin-top: 15px;
+      font-weight: bold;
+      color: #444;
+    }
+    input, select {
+      padding: 10px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 14px;
+    }
+    .btn {
+      margin-top: 25px;
+      padding: 12px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: bold;
+      transition: background-color 0.2s;
+    }
+    .btn:hover {
+      background-color: #45a049;
+    }
+    .btn-back {
+      margin-top: 15px;
+      padding: 10px;
+      background-color: #888;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    .btn-back:hover {
+      background-color: #666;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h2>Điền thông tin môn học</h2>
+    <form id="addSubjectForm">
+      <label for="tenMon">Tên môn học:</label>
+      <input type="text" id="tenMon" name="tenMon" placeholder="Nhập tên môn học..." required>
+
+      <label for="khoiKienThuc">Khối kiến thức:</label>
+      <select id="khoiKienThuc" name="khoiKienThuc" required>
+        <option value="">-- Chọn khối kiến thức --</option>
+        <option value="Đại cương">Đại cương</option>
+        <option value="Cơ sở nhóm ngành">Cơ sở nhóm ngành</option>
+        <option value="Cơ sở ngành">Cơ sở ngành</option>
+        <option value="Chuyên ngành">Chuyên ngành</option>
+        <option value="Tự chọn">Tự chọn</option>
+        <option value="Đồ án / Thực tập">Đồ án / Thực tập</option>
+      </select>
+
+      <button type="submit" class="btn">➕ Thêm môn học</button>
+      <button type="button" class="btn-back" onclick="window.location.href='student.html'">⬅ Quay lại</button>
+    </form>
+  </div>
+
+<script>
+  document.getElementById("addSubjectForm").addEventListener("submit", async function(e) {
+    e.preventDefault();
+
+    let tenMon = document.getElementById("tenMon").value.trim();
+    let khoiKienThuc = document.getElementById("khoiKienThuc").value;
+
+    if (!tenMon) {
+      alert("Vui lòng nhập tên môn học!");
+      return;
+    }
+    if (!khoiKienThuc) {
+      alert("Vui lòng chọn khối kiến thức!");
+      return;
+    }
+
+    // Dữ liệu gửi đúng cột trong bảng subjects
+    let newSubject = { 
+      ten_mon: tenMon, 
+      khoi_kien_thuc: khoiKienThuc 
+    };
+
+    try {
+      // ⚡ Đổi sang API Render của bạn
+      let res = await fetch("https://dudoandiem-1.onrender.com/api/subjects", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newSubject)
+      });
+
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.message || "API lỗi!");
+      }
+
+      alert("✅ Thêm môn học thành công (lưu vào CSDL)!");
+    } catch (err) {
+      console.warn("⚠ Backend không phản hồi, fallback sang LocalStorage:", err.message);
+
+      // Fallback localStorage (chỉ để test offline)
+      let extraSubjects = JSON.parse(localStorage.getItem("extraSubjects") || "[]");
+      if (!extraSubjects.some(s => s.ten_mon === newSubject.ten_mon)) {
+        extraSubjects.push(newSubject);
+        localStorage.setItem("extraSubjects", JSON.stringify(extraSubjects));
+      }
+
+      alert("✅ Thêm môn học thành công (LocalStorage)!");
+    }
+
+    // Sau khi thêm xong thì quay về trang danh sách
+    window.location.href = "student.html";
+  });
+</script>
+
+</body>
+</html>
