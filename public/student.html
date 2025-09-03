@@ -403,37 +403,42 @@
     return Math.max(lo, Math.min(hi, x));
   }
 
- // ====== NẠP THÊM MÔN HỌC TỪ localStorage ======
-  function loadExtraSubjects() {
+  // ====== NẠP DANH SÁCH MÔN HỌC TỪ BACKEND ======
+  async function loadSubjects() {
     try {
+      const res = await fetch("https://dudoandiem-1.onrender.com/api/subjects");
+      const subjects = await res.json();
+
+      console.log("📥 Subjects từ API:", subjects);
+
       const select = document.getElementById("monHoc");
-      const extraSubjects = JSON.parse(localStorage.getItem("extraSubjects") || "[]");
 
-      console.log("📌 Extra subjects từ localStorage:", extraSubjects); // debug
+      // ⚡ Không xoá option cũ nữa (vẫn giữ 62 môn mặc định trong HTML)
 
-      if (Array.isArray(extraSubjects)) {
-        extraSubjects.forEach(sub => {
-          if (typeof sub === "object" && sub.name && sub.block) {
-            // Gắn nhãn cho môn học mới
-            blockMap[sub.name] = sub.block;
+      subjects.forEach(sub => {
+        const tenMon = sub.ten_mon;
+        const khoiKT = sub.khoi_kien_thuc || "Cơ sở nhóm ngành";
 
-            // Thêm vào dropdown nếu chưa có
-            if (![...select.options].some(opt => opt.value === sub.name)) {
-              const opt = document.createElement("option");
-              opt.value = sub.name;
-              opt.textContent = sub.name;
-              select.appendChild(opt);
-            }
-          }
-        });
-      }
-    } catch (e) {
-      console.error("❌ Lỗi khi nạp môn học thêm:", e);
+        // Cập nhật blockMap
+        blockMap[tenMon] = khoiKT;
+
+        // Kiểm tra nếu chưa có trong select thì mới thêm
+        if (![...select.options].some(opt => opt.value === tenMon)) {
+          const opt = document.createElement("option");
+          opt.value = tenMon;
+          opt.textContent = tenMon;
+          select.appendChild(opt);
+        }
+      });
+    } catch (err) {
+      console.error("❌ Lỗi khi tải danh sách môn học:", err);
     }
   }
 
-  // 🚀 Gọi ngay khi script chạy
-  loadExtraSubjects();
+  document.addEventListener("DOMContentLoaded", () => {
+    loadSubjects();
+  });
+
 </script>
 
 </body>
